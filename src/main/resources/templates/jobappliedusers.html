@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en-us" class="layout-pf layout-pf-fixed" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>View Applied Jobs</title>
+    <data th:replace="fragments/header::header" />
+</head>
+
+<body>
+    <div th:replace="fragments/top-navi-bar::top-navi-bar" />
+    <div th:replace="fragments/vertical-navi::vertical-navi" />
+
+    <div id="myModal" class="modal">
+        <div id="cvContent" class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <table>
+                <tr>
+                    <td style="width:67%"></td>
+                    <td>
+                        <p id="hName" style=" color: blue; font-size:18px; margin:0; padding:0;"></p>
+                        <p id="hAddress" style="display:inline;"></p><br>
+                        <p id="hEmail" style="margin:0;  padding:0;"></p>
+                        <p id="hPhone" style="margin:0;  padding:0;"> </p>
+                    </td>
+                </tr>
+            </table>
+
+            <hr />
+            <table>
+                <tr>
+                    <td width="15px"></td>
+                    <td>
+
+                        <p id="vTitleRole" style="display:inline"> </p>
+                        <br> <br>
+                        <b style="color:#0d84d4">Main Skills: </b>
+                        <ul id="vSkills">
+
+                        </ul>
+                    </td>
+                </tr>
+
+            </table>
+            <br>
+            <table style="width: 95%">
+                <tr>
+                    <td width="15px"></td>
+                    <td>
+                        <b style="color:#0d84d4">Work Experience: </b>
+                        <div id="expDispTable" style="width: 95%">
+
+                            <table id="vexpTable" class="cvTable" style="width:95%;">
+                                <thead>
+                                    <tr>
+                                        <th>Company Name</th>
+                                        <th>Technologies Used</th>
+                                        <th>Project Details</th>
+                                        <th>From </th>
+                                        <th>To </th>
+                                    </tr>
+                                </thead>
+                                <tbody> </tbody>
+                            </table>
+                        </div>
+                        <br><br>
+                        <b style="color:#0d84d4">Education: </b>
+                        <div id="eduDispTable" style="width: 95%">
+                            <table id="veduTable" class="cvTable" style="width:95%;">
+                                <thead>
+                                    <tr>
+                                        <th>Course Name</th>
+                                        <th>University Name</th>
+                                        <th>Grade</th>
+                                        <th>From </th>
+                                        <th>Completed </th>
+                                    </tr>
+                                </thead>
+                                <tbody> </tbody>
+                            </table>
+                        </div>
+                        <br><br>
+                        <b style="color:#0d84d4">Certifications: </b>
+                        <div id="certDispTable" style="width: 95%">
+                            <table id="vcertTable" class="cvTable" style="width:95%;">
+                                <thead>
+                                    <tr>
+                                        <th>Certificate Name</th>
+                                        <th>Certificate ID</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody> </tbody>
+                            </table>
+                        </div>
+                        <br><br>
+                        <p id="vfname" style="display:inline"> </p> <br>
+                        <p id="vage" style="display:inline"> </p> <br>
+                        <p id="vsalary" style="display:inline"> </p>
+                        <br><br>
+                        <div>
+                        </div>
+                        <div style="text-align: center; align-content: center; align-self: center; ">
+                            <input type='button' id='btn' value='Print' onclick='printDiv();' style="color: blue;">&nbsp;
+                            <input type='button' id='cancelPrint' value='Cancel' style="color: blue;">
+
+                        </div>
+
+                    </td>
+                </tr>
+            </table>
+            <br><br>
+
+        </div>
+
+    </div>
+
+
+    <div class="content">
+        <h3 id="header" style="color:orange">Users Applied for the jobs</h3>
+        <table class="datatable" id="tblviewJob">
+            <thead>
+
+                <tr>
+                    <th>Job Id</th>
+                    <th>Title</th>
+                    <th>View Applied User's CV</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="job, iStat : ${jobappliedusers.content}" th:style="${iStat.even}? 'even-row' : 'odd-row'">
+                    <td th:text="${job.jobId}" style="color:blue;" />
+                    <td th:text="${job.jobTitle}" />
+                    <td th:text="${job.appliedUsersId}" style="display: none;" />
+
+                </tr>
+
+
+            </tbody>
+        </table>
+        <div th:if="${jobappliedusers.totalPages > 0}" class="pagination" th:each="pageNumber : ${pageNumbers}">
+            <a th:href="@{/jobappliedusers(size=${jobappliedusers.size}, page=${pageNumber})}" th:text=${pageNumber} th:class="${pageNumber==jobappliedusers.number + 1} ? active"></a>
+        </div>
+        <div th:replace="fragments/footer::footer" />
+
+    </div>
+    <br><br><br>
+    <script>
+        function viewUser(appliedUser) {
+
+            $("#myModal").css("display", "block");
+
+
+            $.get("/users/" + appliedUser.id,
+                function(data, status) {
+                    $("#hName").html("<b>" + data.firstName + " " + data.lastName + "</b>")
+                    $("#hAddress").html("<b>Address: </b>" + data.address)
+                    $("#hEmail").html("<b>Email: </b>" + data.email)
+                    $("#hPhone").html("<b>Phone: </b>" + data.contact)
+                });
+
+
+            $.ajax({
+                url: "/users/cv/" + appliedUser.id,
+                type: 'GET',
+                success: function(data) {
+                    $("#vTitleRole").html("<b style='color:#0d84d4'>Title Role: </b>" + data.titleRole)
+                    $("#vfname").html("<b>Full Name: </b>" + data.personaldatas[0].name)
+                    $("#vage").html("<b>Age: </b>" + data.personaldatas[0].age)
+                    $("#vsalary").html("<b>Expected Salary: </b>" + data.personaldatas[0].expectedSalary)
+
+                    // add skills
+                    vSkills = data.skills[0].split(",")
+                    $('#vSkills li').remove()
+                    for (var lcount = 0; lcount < vSkills.length; lcount++) {
+                        $("#vSkills").append('<li>' + vSkills[lcount] + '</li>');
+                    }
+
+                    //add experience
+                    $('#vexpTable tbody').empty()
+                    table = $("#vexpTable");
+                    var count = data.workExperiences.length
+                    var i = 0
+                    for (let c = 0; c < count; c++) {
+
+                        var tr = $('<tr>');
+                        tr.append('<td>' + data.workExperiences[i].companyName + '</td>');
+                        tr.append('<td>' + data.workExperiences[i].technologiesUsed + '</td>');
+                        tr.append('<td>' + data.workExperiences[i].projctDetails + '</td>');
+                        tr.append('<td>' + new Date(data.workExperiences[i].expFrom).toISOString().slice(0, 10) + '</td>');
+                        tr.append('<td>' + new Date(data.workExperiences[i].expTo).toISOString().slice(0, 10) + '</td>');
+                        table.append(tr);
+                        i++;
+                    }
+
+                    //add education
+                    $('#veduTable tbody').empty()
+                    table = $("#veduTable");
+                    var count = data.educations.length
+                    var i = 0
+                    for (let c = 0; c < count; c++) {
+
+                        var tr = $('<tr>');
+                        tr.append('<td>' + data.educations[i].edCourseName + '</td>');
+                        tr.append('<td>' + data.educations[i].edUniversity + '</td>');
+                        tr.append('<td>' + data.educations[i].edGrade + '</td>');
+                        tr.append('<td>' + new Date(data.educations[i].edFromYear).toISOString().slice(0, 10) + '</td>');
+                        tr.append('<td>' + new Date(data.educations[i].edToYear).toISOString().slice(0, 10) + '</td>');
+                        table.append(tr);
+                        i++;
+                    }
+
+                    //add Certification
+                    $('#vcertTable tbody').empty()
+                    table = $("#vcertTable");
+                    var i = 0;
+                    var count = data.certifications.length
+                    for (let c = 0; c < count; c++) {
+
+                        var tr = $('<tr>');
+                        tr.append('<td>' + data.certifications[i].name + '</td>');
+                        tr.append('<td>' + data.certifications[i].certID + '</td>');
+                        tr.append('<td>' + data.certifications[i].certDetails + '</td>');
+
+                        table.append(tr);
+                        i++;
+                    }
+
+
+                },
+                error: function(data) {
+                    $("#myModal").css("display", "none");
+                    toastr["error"]("CV Not availabale : " + JSON.stringify(errMsg));
+                }
+            });
+
+
+
+
+        }
+
+
+        function printDiv() {
+
+            var divToPrint = document.getElementById('cvContent');
+
+            var newWin = window.open('', 'Print-Window');
+
+            newWin.document.open();
+
+            newWin.document.write('<html><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
+
+            newWin.document.close();
+
+
+        }
+
+        $(document).ready(function() {
+            if ($(".datatable").find("tbody").find("tr").length == 0) {
+                $("#header").text("No users applied for the jobs")
+                $("#tblJob").hide();
+            }
+
+
+            $("#closeModal").click(function() {
+
+                $("#myModal").css("display", "none");
+            });
+            $("#cancelPrint").click(function() {
+
+                $("#myModal").css("display", "none");
+            });
+
+
+
+            // get all users
+            var allUsers
+            $.get("/users",
+                function(data, status) {
+                    allUsers = data
+
+                    // read  data
+                    var i = 1;
+                    var t = document.getElementById('tblviewJob');
+                    var count = $("#tblviewJob tr").length
+                    for (let c = 1; c < count; c++) {
+                        if ($(t.rows[i].cells[2]).html().match(/\d/g) != null) {
+                            var users = $(t.rows[i].cells[2]).html().match(/\d/g).join(",").split(",")
+                            if (users.length > 0) {
+                                var linkUser = ""
+                                for (var cn = 0; cn < users.length; cn++) {
+
+                                    if (allUsers.find(x => x.id === parseInt(users[cn])) != null) {
+                                        linkUser += "<input type='button' style='background-color:green; color:white' id =" + users[cn] + " value=" + allUsers.find(x => x.id === parseInt(users[cn])).firstName + " onclick=viewUser(this)></input> &nbsp;"
+                                    }
+
+                                    if (linkUser != "") {
+                                        $(t.rows[i].cells[2]).html(linkUser)
+                                        $(t.rows[i].cells[2]).show()
+                                    } else {
+                                        $(t.rows[i].cells[2]).html("NA")
+                                        $(t.rows[i].cells[2]).show()
+                                    }
+
+
+
+                                }
+                            }
+
+
+
+
+                        }
+
+
+                        i++;
+                    }
+
+                });
+
+
+
+
+
+
+
+
+        });
+    </script>
+</body>
+
+</html>

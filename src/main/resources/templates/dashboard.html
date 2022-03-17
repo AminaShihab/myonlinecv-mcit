@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en-us" class="layout-pf layout-pf-fixed" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Home Page</title>
+    <data th:replace="fragments/header::header" />
+</head>
+
+<body class="cards-pf">
+    <div th:replace="fragments/top-navi-bar::top-navi-bar" />
+    <div th:replace="fragments/vertical-navi::vertical-navi" />
+    <div class="content">
+        <table>
+            <tr>
+                <td></td>
+                <td><br>
+                    <h3 style="color: blue" id="headerText"></h3>
+
+                    <table style="color: #080740; column-span: 1px; padding: 1px">
+                        <tr>
+                            <td id="tdFirst"></td>
+                        </tr>
+                        <tr>
+                            <td id="tdSecond"></td>
+                        </tr>
+                        <tr>
+                            <td id="tdThird"></td>
+                        </tr>
+
+
+
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div th:replace="fragments/footer::footer" />
+</body>
+<script>
+    $(document).ready(
+        function() {
+
+            var job_count
+            $.get("/job",
+                function(data, status) {
+                    job_count = data.length
+                    var jCount = 0
+                    $("#headerText").text("Hello " + PORTAL_USER.username)
+
+
+                    if (PORTAL_USER.roles[0] == 'EMPLOYER') {
+
+                        $("#tdFirst").text("Total : " + job_count + " jobs are available in the portal by all the employers")
+
+                        var MyJobs = data.filter(x => x.postedById === PORTAL_USER.id)
+                        $("#tdSecond").text("You posted : " + MyJobs.length + " jobs")
+
+                        var myAppliedJobs = MyJobs.filter(x => x.appliedUsersId.length != 0)
+                        if (myAppliedJobs.length > 0) {
+                            for (var k in myAppliedJobs) {
+                                jCount += myAppliedJobs[k].appliedUsersId.length
+
+                            }
+                        }
+                        $("#tdThird").text("Total  " + jCount + " applications received for your jobs")
+
+                    }
+                    if (PORTAL_USER.roles[0] == 'PORTALUSER') {
+                        $("#tdFirst").text("Total : " + job_count + " jobs are available")
+
+                        if (data.length > 0) {
+                            for (var k in data) {
+                                if (data[k].appliedUsersId.includes(PORTAL_USER.id)) {
+                                    jCount++
+                                }
+
+                            }
+                        }
+                        $("#tdSecond").text("You applied for : " + jCount + " jobs")
+
+                    }
+
+
+                });
+
+
+        });
+</script>
+
+</html>

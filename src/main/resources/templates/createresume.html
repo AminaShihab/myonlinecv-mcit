@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en-us" class="layout-pf layout-pf-fixed" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Create Resume</title>
+    <data th:replace="fragments/header::header" />
+
+    <script>
+        function printDiv() {
+
+            var divToPrint = document.getElementById('cvContent');
+
+            var newWin = window.open('', 'Print-Window');
+
+            newWin.document.open();
+
+            newWin.document.write('<html><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
+
+            newWin.document.close();
+
+
+        }
+
+        $(document)
+            .ready(
+                function() {
+
+
+
+                    $("#myBtn").click(function() {
+                        loadModal()
+                        $("#myModal").css("display", "block");
+                    });
+                    $("#closeModal").click(function() {
+
+                        $("#myModal").css("display", "none");
+                    });
+                    $("#cancelPrint").click(function() {
+
+                        $("#myModal").css("display", "none");
+                    });
+
+                    $("#expTable").hide();
+                    $("#eduTable").hide();
+                    $("#myCertification").hide();
+
+                    // Table experience
+                    $(".add-row").click(function() {
+                        $("#expTable").show();
+                        var markup = "<tr> <td>  <input type='checkbox' name='record'> </td> <td><input type='text' name='cname'  /></td> <td><input type='text' name='techused' /></td> <td><input type='text' name='projdetails' /></td> <td><input type='date' name='frmyear'/></td> <td><input type='date' name='toyear' /></td></tr>"
+                        $("#expTable tbody").append(markup);
+                    });
+
+                    // Find and remove selected table rows
+                    $(".delete-row").click(function() {
+                        $("#expTable tbody").find('input[name="record"]').each(function() {
+                            if ($(this).is(":checked")) {
+                                $(this).parent().parent().remove();
+                            }
+                        });
+                    });
+
+                    // Table education
+                    $(".add-ed-row").click(function() {
+                        $("#eduTable").show();
+                        var markup = "<tr> <td>  <input type='checkbox' name='edrecord'> </td> <td><input type='text' name='edcoursename'  /></td> <td><input type='text' name='eduniversity' /></td> <td><input type='text' name='edgrade'/></td> <td><input type='date' name='edfrmyear' /></td> <td><input type='date' name='edtoyear' /></td></tr>"
+                        $("#eduTable tbody").append(markup);
+                    });
+
+                    // Find and remove selected table rows
+                    $(".delete-ed-row").click(function() {
+                        $("#eduTable tbody").find('input[name="edrecord"]').each(function() {
+                            if ($(this).is(":checked")) {
+                                $(this).parent().parent().remove();
+                            }
+                        });
+                    });
+
+
+                    // Table certification
+                    $(".add-cert-row").click(function() {
+                        $("#myCertification").show();
+                        var markup = "<tr> <td>  <input type='checkbox' name='certrecord'> </td> <td><input type='text' name='certname' /></td> <td><input type='text' name='certid'  /></td> <td><input type='text' name='certdetails' /></td> </tr>"
+                        $("#myCertification tbody").append(markup);
+                    });
+
+                    // Find and remove selected table rows
+                    $(".delete-cert-row").click(function() {
+                        $("#myCertification tbody").find('input[name="certrecord"]').each(function() {
+                            if ($(this).is(":checked")) {
+                                $(this).parent().parent().remove();
+                            }
+                        });
+                    });
+
+                    // check is cv exist, then load details
+                    $.get("/users/cv/" + PORTAL_USER.id,
+                        function(data, status) {
+                            cvData = data;
+
+                            $("#trole").val(cvData.titleRole)
+                            $("#skills").val(cvData.skills)
+                            if (cvData.personaldatas.length > 0) {
+                                $("#pername").val(cvData.personaldatas[0].name)
+                                $("#perage").val(cvData.personaldatas[0].age)
+                                $("#persal").val(cvData.personaldatas[0].expectedSalary)
+                            }
+                            // Load Experience details
+                            if (cvData.workExperiences.length > 0) {
+                                exp = cvData.workExperiences
+                                $("#expTable").show();
+                                for (i = 0; i < exp.length; i++) {
+                                    var markup = "<tr> <td>  <input type='checkbox' name='record'> </td> <td><input type='text' name='cname' value= '" + exp[i].companyName + "' /></td> <td><input type='text' name='techused' value= '" + exp[i].technologiesUsed + "' /></td> <td><input type='text' name='projdetails' value= '" + exp[i].projctDetails + "' /></td> <td><input type='date' name='frmyear' value= " + new Date(exp[i].expFrom).toISOString().slice(0, 10) + " /></td> <td><input type='date' name='toyear' value= " + new Date(exp[i].expTo).toISOString().slice(0, 10) + " /></td></tr>"
+
+                                    $("#expTable tbody").append(markup);
+                                }
+                            }
+
+                            // Load Education details
+                            if (cvData.educations.length > 0) {
+                                edu = cvData.educations
+                                $("#eduTable").show();
+                                for (i = 0; i < edu.length; i++) {
+                                    var markup = "<tr> <td>  <input type='checkbox' name='edrecord'> </td> <td><input type='text' name='edcoursename' value= '" + edu[i].edCourseName + "' /></td> <td><input type='text' name='eduniversity' value= '" + edu[i].edUniversity + "' /></td> <td><input type='text' name='edgrade' value= " + edu[i].edGrade + " /></td> <td><input type='date' name='edfrmyear' value= " + new Date(edu[i].edFromYear).toISOString().slice(0, 10) + " /></td> <td><input type='date' name='edtoyear'value=  " + new Date(edu[i].edToYear).toISOString().slice(0, 10) + " /></td></tr>"
+                                    $("#eduTable tbody").append(markup);
+                                }
+                            }
+
+                            // Load Certification details
+                            if (cvData.certifications.length > 0) {
+                                cert = cvData.certifications
+                                $("#myCertification").show();
+                                for (i = 0; i < cert.length; i++) {
+                                    var markup = "<tr> <td>  <input type='checkbox' name='certrecord'> </td> <td><input type='text' name='certname' value= '" + cert[i].name + "' /></td> <td><input type='text' name='certid' value= '" + cert[i].certID + "'  /></td> <td><input type='text' name='certdetails' value= '" + cert[i].certDetails + "'  /></td> </tr>"
+                                    $("#myCertification tbody").append(markup);
+                                }
+                            }
+
+
+                        });
+
+
+                    $("#deleteResume")
+                        .click(
+                            function() {
+                                $.ajax({
+                                    url: "/users/cv/" + PORTAL_USER.id,
+                                    type: 'DELETE',
+                                    success: function(result) {
+                                        toastr["success"]("CV deleted successfully (id : " + PORTAL_USER.id + ")");
+                                        window.setTimeout(function() {
+                                            location.reload()
+                                        }, 1000);
+                                    }
+                                });
+                            });
+
+
+                    $("#saveResume")
+                        .click(
+                            function() {
+
+                                var trole = $("#trole").val()
+                                var skills = $("#skills").val().replace(/\r\n|\r|\n/g, ",")
+                                skills = skills.split("\n").join(",")
+
+                                var pername = $("#pername").val()
+                                var perage = $("#perage").val()
+                                var persal = $("#persal").val()
+
+                                var isValid = true;
+
+                                var validate_fields = true;
+                                if (validate_fields && isValid) {
+
+
+
+                                    // read certification data
+                                    var certObj = [];
+                                    var i = 1;
+                                    var t = document.getElementById('myCertification');
+                                    var count = $("#myCertification tr").length
+                                    for (let c = 1; c < count; c++) {
+                                        item = {}
+                                        item["name"] = $(t.rows[i].cells[1].childNodes[0]).val();
+                                        item["certID"] = $(t.rows[i].cells[2].childNodes[0]).val();
+                                        item["certDetails"] = $(t.rows[i].cells[3].childNodes[0]).val();
+                                        certObj.push(item);
+                                        i++;
+                                    }
+
+                                    // read Experience data
+                                    var expObj = [];
+                                    var i = 1;
+                                    var t = document.getElementById('expTable');
+                                    var count = $("#expTable tr").length
+                                    for (let c = 1; c < count; c++) {
+                                        item = {}
+                                        item["companyName"] = $(t.rows[i].cells[1].childNodes[0]).val();
+                                        item["technologiesUsed"] = $(t.rows[i].cells[2].childNodes[0]).val();
+                                        item["projctDetails"] = $(t.rows[i].cells[3].childNodes[0]).val();
+                                        item["expFrom"] = new Date($(t.rows[i].cells[4].childNodes[0]).val() + " ").toISOString().slice(0, 10);
+                                        item["expTo"] = new Date($(t.rows[i].cells[5].childNodes[0]).val() + " ").toISOString().slice(0, 10);
+                                        //new Date("Jun 11, 2011, 8:00:00 PM ").toISOString().slice(0, 10);
+                                        expObj.push(item);
+                                        i++;
+                                    }
+
+                                    // read Education data
+                                    var eduObj = [];
+                                    var i = 1;
+                                    var t = document.getElementById('eduTable');
+                                    var count = $("#eduTable tr").length
+                                    for (let c = 1; c < count; c++) {
+                                        item = {}
+                                        item["edCourseName"] = $(t.rows[i].cells[1].childNodes[0]).val();
+                                        item["edUniversity"] = $(t.rows[i].cells[2].childNodes[0]).val();
+                                        item["edGrade"] = $(t.rows[i].cells[3].childNodes[0]).val();
+                                        item["edFromYear"] = new Date($(t.rows[i].cells[4].childNodes[0]).val() + " ").toISOString().slice(0, 10);
+                                        item["edToYear"] = new Date($(t.rows[i].cells[5].childNodes[0]).val() + " ").toISOString().slice(0, 10);
+                                        //new Date("Jun 11, 2011, 8:00:00 PM ").toISOString().slice(0, 10);
+                                        eduObj.push(item);
+                                        i++;
+                                    }
+                                    var userCV = {
+                                        "userId": 0,
+                                        "titleRole": trole,
+                                        "skills": [
+                                            skills
+                                        ],
+                                        "workExperiences": expObj,
+                                        "educations": eduObj,
+                                        "certifications": certObj,
+                                        "personaldatas": [{
+                                            "name": pername,
+                                            "age": perage,
+                                            "expectedSalary": persal
+                                        }]
+                                    }
+
+
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '/users/cv/' + PORTAL_USER.id,
+                                        data: JSON.stringify(userCV),
+                                        contentType: "application/json",
+                                        success: function(data) {
+                                            toastr["success"]("Your CV has been updated " + data.userId);
+                                        },
+                                        error: function(errMsg) {
+                                            toastr["error"]("Something went wrong with backend : " + JSON.stringify(errMsg));
+                                        }
+                                    });
+                                }
+                            });
+
+
+                    function loadModal() {
+
+                        $.get("/users/" + PORTAL_USER.id,
+                            function(data, status) {
+                                $("#hName").html("<b>" + data.firstName + " " + data.lastName + "</b>")
+                                $("#hAddress").html("<b>Address: </b>" + data.address)
+                                $("#hEmail").html("<b>Email: </b>" + data.email)
+                                $("#hPhone").html("<b>Phone: </b>" + data.contact)
+                            });
+
+                        $("#vTitleRole").html("<b style='color:#0d84d4'>Title Role: </b>" + $("#trole").val())
+                        $("#vfname").html("<b>Full Name: </b>" + $("#pername").val())
+                        $("#vage").html("<b>Age: </b>" + $("#perage").val())
+                        $("#vsalary").html("<b>Expected Salary: </b>" + $("#persal").val())
+
+                        // add skills
+                        vSkills = $("#skills").val().split(",")
+                        $('#vSkills li').empty()
+                        for (var lcount = 0; lcount < vSkills.length; lcount++) {
+                            $("#vSkills").append('<li>' + vSkills[lcount] + '</li>');
+                        }
+
+                        //add experience
+                        $('#vexpTable tbody').empty()
+                        table = $("#vexpTable");
+                        var i = 1;
+                        var t = document.getElementById('expTable');
+                        var count = $("#expTable tr").length
+                        for (let c = 1; c < count; c++) {
+
+                            var tr = $('<tr>');
+                            tr.append('<td>' + $(t.rows[i].cells[1].childNodes[0]).val() + '</td>');
+                            tr.append('<td>' + $(t.rows[i].cells[2].childNodes[0]).val() + '</td>');
+                            tr.append('<td>' + $(t.rows[i].cells[3].childNodes[0]).val() + '</td>');
+                            tr.append('<td>' + $(t.rows[i].cells[4].childNodes[0]).val() + '</td>');
+                            tr.append('<td>' + $(t.rows[i].cells[5].childNodes[0]).val() + '</td>');
+                            table.append(tr);
+                            i++;
+                        }
+
+                        //add education
+                        $('#veduTable tbody').empty()
+                        table = $("#veduTable");
+                        var i = 1;
+                        var t = document.getElementById('eduTable');
+                        var count = $("#eduTable tr").length
+                        for (let c = 1; c < count; c++) {
+
+                            var tr = $('<tr>');
+                            tr.append('<td>' + $(t.rows[i].cells[1].childNodes[0]).val() + '</td>');
+                            tr.append('<td>' + $(t.rows[i].cells[2].childNodes[0]).val() + '</td>');
+                            tr.append('<td>' + $(t.rows[i].cells[3].childNodes[0]).val() + '</td>');
+                            tr.append('<td>' + $(t.rows[i].cells[4].childNodes[0]).val() + '</td>');
+                            tr.append('<td>' + $(t.rows[i].cells[5].childNodes[0]).val() + '</td>');
+
+                            table.append(tr);
+                            i++;
+                        }
+
+                        //add Certification
+                        $('#vcertTable tbody').empty()
+                        table = $("#vcertTable");
+                        var i = 1;
+                        var t = document.getElementById('myCertification');
+                        var count = $("#myCertification tr").length
+                        for (let c = 1; c < count; c++) {
+
+                            var tr = $('<tr>');
+                            tr.append('<td>' + $(t.rows[i].cells[1].childNodes[0]).val() + '</td>');
+                            tr.append('<td>' + $(t.rows[i].cells[2].childNodes[0]).val() + '</td>');
+                            tr.append('<td>' + $(t.rows[i].cells[3].childNodes[0]).val() + '</td>');
+
+                            table.append(tr);
+                            i++;
+                        }
+
+
+
+                    }
+
+
+
+                });
+    </script>
+
+</head>
+
+<body class="cards-pf">
+    <div th:replace="fragments/top-navi-bar::top-navi-bar" />
+    <div th:replace="fragments/vertical-navi::vertical-navi" />
+    <div class="content">
+
+
+        <div id="myModal" class="modal">
+            <div id="cvContent" class="modal-content">
+                <span class="close" id="closeModal">&times;</span>
+                <table>
+                    <tr>
+                        <td style="width:67%"></td>
+                        <td>
+                            <p id="hName" style=" color: blue; font-size:18px; margin:0; padding:0;"></p>
+                            <p id="hAddress" style="display:inline;"></p><br>
+                            <p id="hEmail" style="margin:0;  padding:0;"></p>
+                            <p id="hPhone" style="margin:0;  padding:0;"> </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <hr />
+                <table>
+                    <tr>
+                        <td width="15px"></td>
+                        <td>
+
+                            <p id="vTitleRole" style="display:inline"> </p>
+                            <br> <br>
+                            <b style="color:#0d84d4">Main Skills: </b>
+                            <ul id="vSkills">
+
+                            </ul>
+                        </td>
+                    </tr>
+
+                </table>
+                <br>
+                <table style="width: 95%">
+                    <tr>
+                        <td width="15px"></td>
+                        <td>
+                            <b style="color:#0d84d4">Work Experience: </b>
+                            <div id="expDispTable" style="width: 95%">
+
+                                <table id="vexpTable" class="cvTable" style="width:95%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Company Name</th>
+                                            <th>Technologies Used</th>
+                                            <th>Project Details</th>
+                                            <th>From </th>
+                                            <th>To </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody> </tbody>
+                                </table>
+                            </div>
+                            <br><br>
+                            <b style="color:#0d84d4">Education: </b>
+                            <div id="eduDispTable" style="width: 95%">
+                                <table id="veduTable" class="cvTable" style="width:95%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Course Name</th>
+                                            <th>University Name</th>
+                                            <th>Grade</th>
+                                            <th>From </th>
+                                            <th>Completed </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody> </tbody>
+                                </table>
+                            </div>
+                            <br><br>
+                            <b style="color:#0d84d4">Certifications: </b>
+                            <div id="certDispTable" style="width: 95%">
+                                <table id="vcertTable" class="cvTable" style="width:95%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Certificate Name</th>
+                                            <th>Certificate ID</th>
+                                            <th>Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody> </tbody>
+                                </table>
+                            </div>
+                            <br><br>
+                            <p id="vfname" style="display:inline"> </p> <br>
+                            <p id="vage" style="display:inline"> </p> <br>
+                            <p id="vsalary" style="display:inline"> </p>
+                            <br><br>
+                            <div>
+                            </div>
+                            <div style="text-align: center; align-content: center; align-self: center; ">
+                                <input type='button' id='btn' value='Print' onclick='printDiv();' style="color: blue;">&nbsp;
+                                <input type='button' id='cancelPrint' value='Cancel' style="color: blue;">
+
+                            </div>
+
+                        </td>
+                    </tr>
+                </table>
+                <br><br>
+
+            </div>
+
+        </div>
+
+        <table>
+            <tr>
+                <td></td>
+                <td>
+                    <h3 style="color: blue;">Manage CV</h3>
+                    <button id="myBtn" style=" background-color: green; color: white;">Preview CV</button>
+                    <table style="color: #db0f46;">
+                        <tr>
+                            <td>
+                                <h5>Title Role</h5>
+                            </td>
+                            <td><input type="text" name="trole" id="trole" size="86" /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h5>Add Main Skills separated by comma(,)</h5>
+                            </td>
+                            <td><textarea id="skills" name="skills" rows="4" cols="85"> </textarea>
+                        </tr>
+                    </table>
+                    </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><br>
+                    <h5 style="color: #db0f46">Work Experience</h5>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <table id="expTable">
+                        <thead>
+                            <tr style="font-size: 12px; color: blue">
+                                <th></th>
+                                <th>Company Name</th>
+                                <th>Technologies Used</th>
+                                <th>Project Details</th>
+                                <th>From Year</th>
+                                <th>To Year</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+
+                    <div id="expbtns">
+                        <br>
+                        <input type="button" class="add-row" style="color: blue; align-self: center;" value="Add Experience">
+                        <button type="button" class="delete-row" style="color: blue; align-self: center;">Delete
+              Experience</button>
+                    </div>
+
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><br>
+                    <h5 style="color: #db0f46">Education Details</h5>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <table id="eduTable">
+                        <thead>
+                            <tr style="font-size: 12px; color: blue">
+                                <th></th>
+                                <th>Course Name</th>
+                                <th>University Name</th>
+                                <th>Grade</th>
+                                <th>From Year</th>
+                                <th>To Year</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+
+                    <div>
+                        <br>
+                        <input type="button" class="add-ed-row" style="color: blue; align-self: center;" value="Add Education">
+                        <button type="button" class="delete-ed-row" style="color: blue; align-self: center;">Delete
+              Education</button>
+                    </div>
+
+                </td>
+            </tr>
+
+
+            <tr>
+                <td></td>
+                <td><br>
+                    <h5 style="color: #db0f46">Add Certifications</h5>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <table id="myCertification">
+                        <thead>
+                            <tr style="font-size: 12px; color: blue">
+                                <th></th>
+                                <th>Certificate Name</th>
+                                <th>Certificate ID</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+
+                    <div>
+                        <br>
+                        <input type="button" class="add-cert-row" style="color: blue; align-self: center;" value="Add Certificate">
+                        <button type="button" class="delete-cert-row" style="color: blue; align-self: center;">Delete
+              Certificate</button>
+                    </div>
+
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><br>
+                    <h5 style="color: #db0f46">Personal Data</h5>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <table id="myPersonalDetails">
+                        <thead>
+                            <tr style="font-size: 12px; color: blue">
+                                <th></th>
+                                <th>Full Name</th>
+                                <th>Age</th>
+                                <th>Expected Salary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td><input type="text" name="pername" id="pername" size="32" /></td>
+                                <td><input type="text" name="perage" id="perage" size="32" /></td>
+                                <td><input type="text" name="persal" id="persal" size="32" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table>
+                        <tr>
+                            <td></td>
+                            <td width="275px"><br></td>
+                            <td style="text-align: center;" colspan="1">
+                                <input style="border-radius: 12px; color: white; background-color: green; width: 80px; height: 20 px; font-size: 13px" type="button" class="button" name="Save" value="SAVE" id="saveResume" /> &nbsp;
+                                <input style="border-radius: 12px; color: white; background-color: red; width: 80px; height: 20 px; font-size: 13px" type="button" class="button" name="Save" value="DELETE" id="deleteResume" />
+                                <br><br>
+                            </td>
+
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+        </table>
+
+        <br><br><br>
+        <div th:replace="fragments/footer::footer" />
+</body>
+
+</html>

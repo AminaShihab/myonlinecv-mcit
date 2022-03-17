@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en-us" class="layout-pf layout-pf-fixed" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>About</title>
+    <data th:replace="fragments/header::header" />
+</head>
+
+<body class="cards-pf">
+    <div th:replace="fragments/top-navi-bar::top-navi-bar" />
+    <div th:replace="fragments/vertical-navi::vertical-navi" />
+    <div class="content">
+        <table>
+            <tr>
+                <td></td>
+                <td><br>
+                    <h3 style="color: blue"> About us</h3>
+
+                    <table style="color: #080740; column-span: 1px; padding: 1px">
+                        <tr>
+                            <td>
+
+                                <div>
+                                    <p> <b>My Online CV </b> is a job management web portal for both users and employers. Users can sign up and create a profile for free. Logged in users are able to view all the jobs posted by employers and can be applied
+                                        for any number of jobs as per their preference. In addition, users can view the list of applied jobs and can remove them at any time, if they are no longer interested .</p>
+                                </div>
+                                <br>
+                                <div>
+                                    <p>Employers can sign up and create their profile, and are allowed to post job openings. Employers are allowed to update or delete their job postings
+                                    </p>
+                                </div>
+                                <br>
+                                <div>
+                                    <p> <b>Privacy Policy </b> Last updated: January 27, 2022 This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about
+                                        Your privacy rights and how the law protects You. We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy
+                                        Policy. This Privacy Policy has been created with the help of the Privacy Policy Template. </p>
+
+                                </div>
+                            </td>
+                        </tr>
+
+
+
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div th:replace="fragments/footer::footer" />
+</body>
+<script>
+    $(document).ready(
+        function() {
+
+            var job_count = 12
+            $("#headerText").text("Hello " + PORTAL_USER.username)
+
+            if (PORTAL_USER.roles[0] == 'ADMIN') {
+                $("#tdFirst").text("You posted : " + job_count + " jobs ")
+            }
+            if (PORTAL_USER.roles[0] == 'EMPLOYER') {
+                $("#tdFirst").text("You posted : " + job_count + " jobs")
+            }
+            if (PORTAL_USER.roles[0] == 'PORTALUSER') {
+                $("#tdFirst").text("You Applied : " + job_count + " jobs")
+            }
+        });
+</script>
+
+</html>

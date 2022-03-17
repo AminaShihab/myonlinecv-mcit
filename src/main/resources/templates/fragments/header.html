@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="header">
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="assets/img/favicon.ico" />
+    <link rel="stylesheet" href="assets/css/portal.css" />
+
+    <script src="assets/js/jquery.min.js"></script>
+
+    <!-- 
+	https://onlinecode.org/laravel-notification-message-popup-using-toastr-js-plugin/
+	https://codeseven.github.io/toastr/demo.html
+	 -->
+    <link rel="stylesheet" href="assets/css/toastr.min.css" />
+    <script src="assets/js/toastr.min.js"></script>
+
+    <script th:inline="javascript">
+        var PORTAL_USER = /*[[${session.PORTAL_USER}]]*/ "";
+    </script>
+
+</th:block>
+
+</html>

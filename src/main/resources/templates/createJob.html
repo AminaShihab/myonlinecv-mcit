@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en-us" class="layout-pf layout-pf-fixed" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Post Jobs</title>
+    <data th:replace="fragments/header::header" />
+    <script>
+        $(document).ready(function() {
+            $("#saveJob").click(function() {
+                var jobTitle = $("#jtitle").val()
+                var jobDesc = $("#jdesc").val()
+                var jobSal = $("#jsal").val()
+                var jobSkills = $("#jskills").val()
+                var jobCompany = $("#jcompany").val()
+                var jobCompanyDesc = $("#jcompanydesc").val()
+                var jobCity = $("#jcity").val()
+                var jobTill = $("#jtilldate").val()
+
+
+
+                if (jobTitle == "" ||
+                    jobDesc == "" ||
+                    jobSal == "" ||
+                    jobSkills == "" ||
+                    jobCompany == "" ||
+                    jobCompanyDesc == "" ||
+                    jobCity == "" ||
+                    jobTill == "") {
+                    toastr["warning"]("Please enter values for all the fields");
+                } else {
+                    var sendData = {
+                        "jobTitle": jobTitle,
+                        "jobDescription": jobDesc,
+                        "salary": jobSal,
+                        "jobType": $("#jobtype option:selected").text(),
+                        "requiredSkills": jobSkills,
+                        "companyName": jobCompany,
+                        "companyDesciption": jobCompanyDesc,
+                        "city": jobCity,
+                        "validTill": jobTill,
+                        "postedById": PORTAL_USER.id
+
+
+
+                    }
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/employers/job',
+                        data: JSON.stringify(sendData),
+                        contentType: "application/json",
+                        success: function(data) {
+                            toastr["success"]("A new Job has been created with id " + data.jobId);
+                        },
+                        error: function(errMsg) {
+                            toastr["error"]("Something went wrong with backend : " + JSON.stringify(errMsg));
+                        }
+                    });
+                }
+            });
+
+        });
+    </script>
+</head>
+
+<body>
+    <div th:replace="fragments/top-navi-bar::top-navi-bar" />
+    <div th:replace="fragments/vertical-navi::vertical-navi" />
+    <div class="content">
+        <table>
+            <tr>
+                <td>
+                    <h3 style="color: blue;">Create new job</h3>
+                    <table style="color: #260d94">
+                        <!-- <tr> // Entity should automatically create the ID
+							<td>Position ID</td>
+							<td><input type="text" name="contact" id="posid" size="86" /></td>
+						</tr> -->
+                        <tr>
+                            <td>Title</td>
+                            <td><input type="text" name="contact" id="jtitle" size="86" /></td>
+                        </tr>
+                        <tr>
+                            <td>Description</td>
+                            <td><textarea id="jdesc" name="jdesc" rows="4" cols="84"> </textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Salary/ hr</td>
+                            <td><input type="text" name="jsal" id="jsal" size="86" /></td>
+                        </tr>
+                        <tr>
+                            <td>Job Type</td>
+                            <td>
+                                <select name="type" id="jobtype">
+									<option value="Permanent">Permanent</option>
+									<option value="Contract">Contract</option>
+									<option value="Internship">Internship</option>
+									<option value="Freelance">Freelance</option>
+								</select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Required skills</td>
+                            <td><textarea id=jskills name="jdetails" rows="3" cols="84"> </textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Company Name</td>
+                            <td><input type="text" name="jcomp" id="jcompany" size="86" /></td>
+                        </tr>
+                        <tr>
+                            <td>Company Description</td>
+                            <td><textarea id=jcompanydesc name="jcompanydesc" rows="3" cols="84"> </textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>City</td>
+                            <td><input type="text" name="jcity" id="jcity" size="86" /></td>
+
+                        </tr>
+                        <tr>
+                            <td>Valid Till</td>
+                            <td><input type="date" name="tilldate" id="jtilldate" size="86" /></td>
+
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            <td style="text-align: center;" colspan="1"><input style="border-radius: 12px; color: white; background-color: blue; width: 65px; height: 20 px; font-size: 17px" type="button" class="button" name="Save" value="SAVE" id="saveJob" /></td>
+
+                        </tr>
+
+                    </table>
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+    <br><br><br>
+    <div th:replace="fragments/footer::footer" />
+
+</body>
+
+</html>

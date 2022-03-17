@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en-us" class="layout-pf layout-pf-fixed" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Edit Profile</title>
+    <data th:replace="fragments/header::header" />
+</head>
+
+<body class="cards-pf">
+    <div th:replace="fragments/top-navi-bar::top-navi-bar" />
+    <div th:replace="fragments/vertical-navi::vertical-navi" />
+    <div class="content">
+        <table>
+            <tr>
+                <td>
+                    <h3 style="color: blue;">Profile Summary</p>
+                    </h3>
+                    <table style="color: #260d94">
+
+
+                        <tr id="fnameRow">
+                            <td>First Name</td>
+                            <td><input type="text" name="fname" id="fname" size="55" /></td>
+                        </tr>
+                        <tr id="lnameRow">
+                            <td>Last Name</td>
+                            <td><input type="text" name="lname" id="lname" size="55" /></td>
+
+                        </tr>
+                        <tr id="cnameRow">
+                            <td>Employer Name</td>
+                            <td><input type="text" name="cname" id="cname" size="55" /></td>
+
+                        </tr>
+                        <tr>
+                            <td>Username</td>
+                            <td><input type="text" name="uname" id="uname" size="55" readonly style="background-color:#ebf2ee;" value="********" /></td>
+
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td><input type="text" name="email" id="email" size="55" readonly style="background-color:#ebf2ee;" value="********" /></td>
+                        </tr>
+                        <tr>
+                            <td>Address</td>
+                            <td><textarea id="address" name="address" rows="3" cols="54"> </textarea>
+                        </tr>
+                        <tr>
+                            <td>Contact</td>
+                            <td><input type="text" name="contact" id="contact" size="55" /></td>
+                        </tr>
+                        <tr>
+                            <td>Password</td>
+                            <td><input type="text" name="passw" id="pass" size="55" style="background-color:#ebf2ee;" value="********" /></td>
+
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td style="text-align: center;" colspan="1"><input style="border-radius: 12px; color: white; background-color: blue; width: 65px; height: 20 px; font-size: 17px" type="button" class="button" name="Save" value="SAVE" id="saveProfile" /></td>
+                        </tr>
+                    </table>
+                    </td>
+            </tr>
+        </table>
+
+    </div>
+    <br><br><br>
+    <div th:replace="fragments/footer::footer" />
+</body>
+
+<script>
+    $(document)
+        .ready(
+            function() {
+                let userrole
+                let role
+                if (PORTAL_USER.roles[0] == "EMPLOYER") {
+                    userrole = 'employers'
+                }
+                if (PORTAL_USER.roles[0] == "PORTALUSER") {
+                    userrole = 'users'
+                }
+                getUrl = "/" + userrole + "/" + PORTAL_USER.id
+
+                $.get(getUrl,
+                    function(data, status) {
+
+                        $("#fname").val(data.firstName)
+                        $("#lname").val(data.lastName)
+                        $("#email").val(data.email)
+                            //$("#uname").val(data.userName)			
+                        $("#address").val(data.address)
+                        $("#contact").val(data.contact)
+                            //$("#pass").val(data.password)	
+                        $("#cname").val(data.companyName)
+                        role = data.role
+                        if (role == 'user') {
+                            $("#fnameRow").show();
+                            $("#lnameRow").show();
+                            $("#cnameRow").hide()
+                        }
+                        if (role == 'employer') {
+                            $("#fnameRow").hide();
+                            $("#lnameRow").hide();
+                            $("#cnameRow").show()
+                        }
+
+                    });
+
+
+
+                $("#saveProfile")
+                    .click(
+                        function() {
+                            var isValid = false;
+                            var firstName = $("#fname").val()
+                            var lastName = $("#lname").val()
+                            var uname = $("#uname").val()
+                            var email = $("#email").val()
+                            var password = $("#pass").val()
+                            var address = $("#address").val()
+                            var contact = $("#contact").val()
+                            var companyName = $("#cname").val()
+
+                            if (role == 'user') {
+                                postUrl = "/users/" + PORTAL_USER.id
+                                if (firstName == "" ||
+                                    lastName == "" ||
+                                    uname == "" ||
+                                    email == "" ||
+                                    password == "" ||
+                                    address == "" ||
+                                    contact == "") {
+                                    alert("Please enter values for all the fields.");
+                                    isValid = false;
+                                    return false;
+                                } else {
+                                    isValid = true;
+                                }
+                            } else {
+                                postUrl = "/employers/" + PORTAL_USER.id
+                                if (companyName == "" ||
+                                    uname == "" ||
+                                    email == "" ||
+                                    password == "" ||
+                                    address == "" ||
+                                    contact == "") {
+                                    alert("Please enter values for all the fields.");
+                                    isValid = false;
+                                    return false;
+                                } else {
+                                    isValid = true;
+                                }
+
+                            }
+                            validate_fields = true
+                            if (validate_fields && isValid) {
+
+                                var sendData = {
+                                    "id": PORTAL_USER.id,
+                                    "firstName": firstName,
+                                    "lastName": lastName,
+                                    "companyName": companyName,
+                                    "userName": uname,
+                                    "email": email,
+                                    "password": password,
+                                    "address": address,
+                                    "contact": contact,
+                                    "role": role
+                                }
+
+                                $
+                                    .ajax({
+                                        type: 'PUT',
+                                        url: postUrl,
+                                        data: JSON
+                                            .stringify(sendData),
+                                        contentType: "application/json",
+                                        success: function(
+                                            data) {
+                                            console
+                                                .log(data);
+                                            toastr["success"]("Updated Successfully");
+                                        },
+                                        error: function(
+                                            errMsg) {
+                                            alert(errMsg);
+                                        }
+                                    });
+                            }
+                        });
+
+            });
+</script>
+
+</html>

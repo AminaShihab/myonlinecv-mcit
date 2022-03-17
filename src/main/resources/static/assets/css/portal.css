@@ -1,0 +1,207 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    height: 50px;
+    width: 100%;
+    background-color: #c7ccd4;
+    color: white;
+    text-align: center;
+}
+
+.header {
+    left: 0;
+    position: fixed;
+    overflow: visible;
+    background-color: #008fb3;
+    padding: 13px 9px;
+    width: 100%;
+}
+
+.header a {
+    float: left;
+    color: white;
+    text-align: center;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 15px;
+    line-height: 25px;
+    border-radius: 3px;
+}
+
+.header a:hover {
+    color: orange;
+}
+
+.header-right {
+    float: right;
+}
+
+@media screen and (max-width: 500px) {
+    .header a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+}
+
+
+/*Vertical bar css Please update as your wish */
+
+.navi {
+    list-style-type: none;
+    margin-top: 94px;
+    padding: 0;
+    width: 10%;
+    background-color: #f1f1f1;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+    font-size: 13.5px;
+}
+
+.navi li a {
+    display: block;
+    color: purple;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+.navi li a.active {
+    background-color: #4caf50;
+    color: white;
+}
+
+.navi li a:hover:not(.active) {
+    background-color: gold;
+    color: white;
+}
+
+.content {
+    padding-left: 11%;
+    padding-top: 7%;
+}
+
+
+/* Table styles*/
+
+.pagination {
+    display: inline-block;
+}
+
+.pagination a {
+    color: black;
+    float: left;
+    padding: 5px 5px;
+    text-decoration: none;
+}
+
+.pagination a.active {
+    background-color: #4caf50;
+    color: white;
+    border-radius: 2px;
+}
+
+.datatable {
+    border-collapse: collapse
+}
+
+.datatable th,
+td {
+    border-bottom: 1px solid #ddd;
+}
+
+.datatable tr:hover {
+    background-color: #dad8d8;
+    color: black
+}
+
+.datatable th,
+td {
+    padding: 5px;
+    text-align: left;
+}
+
+.datatable th {
+    background-color: #4caf50;
+    color: white;
+}
+
+
+/* The Modal (background) */
+
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    padding-top: 100px;
+    /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+}
+
+
+/* Modal Content */
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 1px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.cvTable table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.cvTable th {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.cvTable td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+
+/* The Close Button */
+
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}

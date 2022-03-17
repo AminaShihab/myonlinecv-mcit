@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en-us" class="layout-pf layout-pf-fixed" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Contact</title>
+    <data th:replace="fragments/header::header" />
+</head>
+
+<body class="cards-pf">
+    <div th:replace="fragments/top-navi-bar::top-navi-bar" />
+    <div th:replace="fragments/vertical-navi::vertical-navi" />
+    <div class="content">
+        <table>
+            <tr>
+                <td></td>
+                <td><br>
+					<h3 style="color: blue; text-align: center;">Contact us</h3>
+                    <table style="color: #080740; column-span: 1px; padding: 1px">
+                        <tr>
+                            <td width="200px"> 
+
+                                
+                                
+                            </td>
+                            <td>
+                            <table>
+                            <tr>
+                            <td>Phone </td> <td> +1 800 356 7852</td> </tr>
+                            <tr>
+                            <td>Your name </td> <td><input type="text" id="name" name="name" required><br></td>
+                            </tr>
+                            <tr>
+                            <td>Your email address </td> <td> <input type="email" id="Email" name="Email" required></td>
+                            </tr>
+                            <tr>
+                            <td>Your message </td> <td> <textarea id="Message" name="Message" rows="6" maxlength="3000" required></textarea></td>
+                            </tr>
+                            <tr>
+                            <td>Phone </td> <td> +1 800 356 7852</td>
+                            </tr>
+                            <tr>
+                            <td></td> <td style="align-content: center; text-align: center;"><button type="submit" id="saveContactUs" style="color: white; background-color: green; border-radius: 5px;">Send</button></td> 
+                               
+                            
+                            </tr>
+                            
+                            </table>
+                        </tr>
+
+
+
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div th:replace="fragments/footer::footer" />
+</body>
+<script>
+    $(document).ready(function() {
+
+        var job_count = 12
+        $("#headerText").text("Hello " + PORTAL_USER.username)
+
+        if (PORTAL_USER.roles[0] == 'ADMIN') {
+            $("#tdFirst").text("You posted : " + job_count + " jobs ")
+        }
+        if (PORTAL_USER.roles[0] == 'EMPLOYER') {
+            $("#tdFirst").text("You posted : " + job_count + " jobs")
+        }
+        if (PORTAL_USER.roles[0] == 'PORTALUSER') {
+            $("#tdFirst").text("You Applied : " + job_count + " jobs")
+        }
+
+        $("#saveContactUs").click(function() {
+            toastr["success"]("Thank you for contacting My Online CV. We will reach out to you shortly");
+            window.setTimeout(function() {
+                location.reload()
+            }, 1200);
+        });
+
+
+    });
+</script>
+
+</html>

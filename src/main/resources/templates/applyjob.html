@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en-us" class="layout-pf layout-pf-fixed" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Apply Jobs</title>
+    <data th:replace="fragments/header::header" />
+</head>
+
+<body>
+    <div th:replace="fragments/top-navi-bar::top-navi-bar" />
+    <div th:replace="fragments/vertical-navi::vertical-navi" />
+    <div id="myModal" class="modal">
+        <div id="cvContent" class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h3 style="color:orange;text-align:center">Job Details</h3>
+
+            <table style="color: #260d94;">
+                <tr>
+                    <td>Position ID</td>
+                    <td><input type="text" name="contact" id="posid" size="86" readonly /></td>
+                </tr>
+                <tr>
+                    <td>Title</td>
+                    <td><input type="text" name="contact" id="jtitle" size="86" readonly /></td>
+                </tr>
+                <tr>
+                    <td>Description</td>
+                    <td><textarea id=jdesc name="jdesc" rows="4" cols="84" readonly> </textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Salary/ hr</td>
+                    <td><input type="text" name="jsal" id="jsal" size="86" readonly /></td>
+                </tr>
+                <tr>
+                    <td>Job Type</td>
+                    <td>
+                        <input type="text" name="jtype" id="jtype" size="86" readonly />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Required skills</td>
+                    <td><textarea id=jskills name="jdetails" rows="3" cols="84" readonly> </textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Company Name</td>
+                    <td><input type="text" name="jsal" id="jcompany" size="86" readonly /></td>
+                </tr>
+                <tr>
+                    <td>Company Description</td>
+                    <td><textarea id=jcompanydesc name="jcompanydesc" rows="3" cols="84" readonly> </textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>City</td>
+                    <td><input type="text" name="jcity" id="jcity" size="86" readonly /></td>
+
+                </tr>
+                <tr>
+                    <td>Posted Date</td>
+                    <td><input type="text" name="jposDate" id="jposDate" size="86" readonly /></td>
+
+                </tr>
+                <tr>
+                    <td>Valid Till</td>
+                    <td><input type="text" name="tilldate" id="jtilldate" size="86" readonly /></td>
+
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td style="text-align: center;" colspan="1"><input style="border-radius: 12px; color: white; background-color: blue; width: 65px; height: 20 px; font-size: 17px" type="button" class="button" name="Save" value="Close" id="closeJob" /></td>
+
+                </tr>
+
+            </table>
+
+            <hr />
+            <br>
+
+        </div>
+
+    </div>
+    <div class="content">
+        <h3 id="header" style="color:orange">Jobs that you can apply</h3>
+        <table class="datatable" id="tblJob">
+            <thead>
+                <tr>
+                    <th>Job Id</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Salary</th>
+                    <th>Job Type</th>
+                    <th>Required Skills</th>
+                    <th>Company</th>
+                    <th>Company Description</th>
+                    <th>City</th>
+                    <th>Posted On</th>
+                    <th>Valid Till</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody th:fragment="search_list">
+                <tr th:each="job, iStat : ${applyjob.content}" th:style="${iStat.even}? 'even-row' : 'odd-row'">
+
+                    <td> <input type="button" name="jobId" th:id="${job.jobId}" th:value="${job.jobId}" readonly style="color:white; width:60px;background-color:green; font-size:14px; border-radius: 8px" onclick="viewJob(this)" /> </td>
+                    <td th:text="${job.jobTitle}" />
+                    <td th:text="${job.jobDescription}" />
+                    <td th:text="${job.salary}" />
+                    <td th:text="${job.jobType}" />
+                    <td th:text="${job.requiredSkills}" />
+                    <td th:text="${job.companyName}" />
+                    <td th:text="${job.companyDesciption}" />
+                    <td th:text="${job.city}" />
+                    <td th:text="${job.postedDate}" />
+                    <td th:text="${job.validTill}" />
+                    <td th:text="${job.appliedUsersId}" style="display:none;" />
+                    <td> <button th:value="${job.jobId}" style="border-radius: 12px;color:white; background-color:green; width:75px; height:22px" onclick="ApplyRow(this)">Apply</button> </td>
+                </tr>
+
+
+            </tbody>
+        </table>
+        <div th:if="${applyjob.totalPages > 0}" class="pagination" th:each="pageNumber : ${pageNumbers}">
+            <a th:href="@{/applyjob(size=${applyjob.size}, page=${pageNumber})}" th:text=${pageNumber} th:class="${pageNumber==applyjob.number + 1} ? active"></a>
+        </div>
+        <div th:replace="fragments/footer::footer" />
+
+    </div>
+    <br><br><br>
+    <script>
+    $("#closeModal").click(function() {
+
+        $("#myModal").css("display", "none");
+    });
+    $("#closeJob").click(function() {
+
+        $("#myModal").css("display", "none");
+    });
+
+    $("#cancelPrint").click(function() {
+
+        $("#myModal").css("display", "none");
+    });
+
+    function printDiv() {
+
+        var divToPrint = document.getElementById('cvContent');
+
+        var newWin = window.open('', 'Print-Window');
+
+        newWin.document.open();
+
+        newWin.document.write('<html><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
+
+        newWin.document.close();
+
+
+    }
+    function viewJob(jobId) {
+
+        $("#myModal").css("display", "block");
+        $.get("/job/" + jobId.id,
+            function(data, status) {
+
+                $("#posid").val(data.jobId)
+                $("#jtitle").val(data.jobTitle)
+                $("#jdesc").val(data.jobDescription)
+                $("#jsal").val(data.salary)
+                $("#jtype").val(data.jobType)
+                $("#jskills").val(data.requiredSkills)
+                $("#jcompany").val(data.companyName)
+                $("#jcompanydesc").val(data.companyDesciption)
+                $("#jcity").val(data.city)
+                $("#jposDate").val(data.postedDate)
+                $("#jtilldate").val(data.validTill.slice(0, 10))
+
+            });
+
+    }
+
+        function ApplyRow(button) {
+            let jobId = button.value;
+            $(button).prop('disabled', true).css('color', 'gray');
+            $.post("/users/" + PORTAL_USER.id + "/job/" + jobId, function(data) {
+                toastr["success"]("Job request has been submitted with id " + jobId);
+                window.setTimeout(function() {
+                    location.reload()
+                }, 1000);
+            });
+        }
+        $(document).ready(function() {
+            if ($(".datatable").find("tbody").find("tr").length == 0) {
+                $("#header").text("You don't have any jobs to apply");
+                $("#tblJob").hide();
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<script src="assets/js/jquery.min.js"></script>
+
+<head>
+
+</head>
+
+
+<body>
+    <div th:fragment="vertical-navi">
+        <ul class="navi" id="sidemenue">
+            <li><a class="home" href="/">Home</a></li>
+            <li sec:authorize="hasAnyAuthority('ADMIN','EMPLOYER')"> <a href="/createjob">Post Jobs</a></li>
+            <li sec:authorize="hasAnyAuthority('ADMIN','EMPLOYER')"><a href="/listjobs">Posted Jobs</a></li>
+            <li sec:authorize="hasAnyAuthority('ADMIN','EMPLOYER')"><a href="/jobappliedusers">Applied Users</a></li>
+            <li class="active"><a href="/editprofile">View/Edit Profile</a></li>
+            <li sec:authorize="hasAnyAuthority('ADMIN','PORTALUSER')"><a href="/createresume">Manage CV</a></li>
+            <li class="active" sec:authorize="hasAnyAuthority('ADMIN','PORTALUSER')"><a href="/applyjob">Apply Jobs</a>
+            </li>
+            <li class="active" sec:authorize="hasAnyAuthority('ADMIN','PORTALUSER')"><a href="/appliedjobs">Applied
+					Jobs</a></li>
+            <li sec:authorize="hasAuthority('ADMIN')"><a href="#">Manage Users</a></li>
+
+        </ul>
+
+    </div>
+</body>
+
+</html>

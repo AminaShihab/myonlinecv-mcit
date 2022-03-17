@@ -1,0 +1,29 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head></head>
+
+<body>
+    <div th:fragment="top-navi-bar">
+        <div class="header">
+            <div style="width: 300px; margin: 0 auto;">
+                <a href="#default" style="font-size: 30px; background-color: #008fb3">My Online CV</a>
+            </div>
+            <div sec:authorize="!isAnonymous()">
+                <p style="color:#dff78f; float: right;">
+                    Welcome &nbsp;<span sec:authentication="name" style="color: #dff78f; float: right;">Bob</span>
+                </p>
+                <br>
+            </div>
+            <div class="header-right">
+                <a href="/" id="homelink">Home</a>
+                <a href="/editprofile">My Profile</a>
+                <a href="/contact" id="contactlink">Contact</a>
+                <a href="/about" id="aboutlink">About</a>
+                <a href="/logout">Logout</a>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,459 @@
+<html lang="en-us" class="layout-pf layout-pf-fixed" xmlns:th="http://www.thymeleaf.org">
+<html>
+
+<head>
+
+    <script src="assets/js/jquery.min.js"></script>
+
+    <!-- 
+	https://onlinecode.org/laravel-notification-message-popup-using-toastr-js-plugin/
+	https://codeseven.github.io/toastr/demo.html
+	 -->
+    <link rel="stylesheet" href="assets/css/toastr.min.css" />
+    <script src="assets/js/toastr.min.js"></script>
+
+    <script th:inline="javascript">
+        var PORTAL_USER = /*[[${session.PORTAL_USER}]]*/ "";
+    </script>
+    <style>
+        a {
+            color: white;
+            font-size: 19px;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            color: orange;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        /* Style the body */
+        
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+        }
+        /* Header/logo Title */
+        
+        .header {
+            padding: 8px;
+            text-align: center;
+            background: #169122;
+            color: white;
+        }
+        /* Increase the font size of the heading */
+        
+        .header h1 {
+            font-size: 20px;
+        }
+        /* Sticky navbar - toggles between relative and fixed, depending on the scroll position. It is positioned relative until a given offset position is met in the viewport - then it "sticks" in place (like position:fixed). The sticky value is not supported in IE or Edge 15 and earlier versions. However, for these versions the navbar will inherit default position */
+        
+        .navbar {
+            overflow: hidden;
+            background-color: gold;
+            position: sticky;
+            position: -webkit-sticky;
+            top: 0;
+        }
+        /* Style the navigation bar links */
+        
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 9px 15px;
+            text-decoration: none;
+        }
+        /* Right-aligned link */
+        
+        .navbar a.right {
+            float: right;
+        }
+        
+        a:hover {
+            color: orange;
+        }
+        /* Change color on hover */
+        
+        .navbar a:hover {
+            background-color: #ddd;
+            color: red;
+        }
+        /* Active/current link */
+        
+        .navbar a.active {
+            background-color: #666;
+            color: white;
+        }
+        /* Column container */
+        
+        .row {
+            display: -ms-flexbox;
+            /* IE10 */
+            display: flex;
+            -ms-flex-wrap: wrap;
+            /* IE10 */
+            flex-wrap: wrap;
+        }
+        /* Create two unequal columns that sits next to each other */
+        /* Sidebar/left column */
+        
+        .side {
+            -ms-flex: 30%;
+            /* IE10 */
+            flex: 30%;
+            background-color: #f1f1f1;
+            padding: 20px;
+        }
+        /* Main column */
+        
+        .main {
+            -ms-flex: 70%;
+            /* IE10 */
+            flex: 70%;
+            background-color: white;
+            padding: 20px;
+        }
+        /* Fake image, just for this example */
+        
+        .fakeimg {
+            background-color: #aaa;
+            width: 50%;
+            padding: 20px;
+        }
+        /* Footer */
+        
+        .footer {
+            padding-top: 10px;
+            text-align: center;
+            background: #ddd;
+            position: absolute;
+            bottom: 0px;
+            width: 100%
+        }
+        /* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
+        
+        @media screen and (max-width: 700px) {
+            .row {
+                flex-direction: column;
+            }
+        }
+        /* Responsive layout - when the screen is less than 400px wide, make the navigation links stack on top of each other instead of next to each other */
+        
+        @media screen and (max-width: 400px) {
+            .navbar a {
+                float: none;
+                width: 100%;
+            }
+        }
+    </style>
+
+
+    <meta charset="ISO-8859-1">
+    <title>Register</title>
+    <script type="text/javascript">
+        function validate_fields() {
+            isValid = true;
+            errorMessage = "";
+            ValidateEmail(document.getElementById('email'));
+            validatePhoneNumber(document.getElementById('phone'));
+
+            if (isValid) {
+                return true;
+            } else {
+                alert("Error: " + errorMessage +
+                    "Please enter correct fields and try again.");
+                return false;
+            }
+
+        }
+
+        function ValidateEmail(inputText) {
+            var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+            if (!inputText.value.match(mailformat)) {
+                errorMessage += "You have entered an invalid email address\n";
+                isValid = false;
+                return false;
+            }
+
+        }
+
+        function validatePhoneNumber(phone) {
+            var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+            if (!phone.value.match(phoneno)) {
+                errorMessage += "invalid phone number\n";
+                isValid = false;
+            }
+
+        }
+    </script>
+
+
+</head>
+
+<style>
+    /* Footer */
+    
+    .footer {
+        padding-top: 10px;
+        text-align: center;
+        background: #ddd;
+        position: absolute;
+        bottom: 0px;
+        width: 100%
+    }
+    
+    a {
+        color: white;
+        font-size: 19px;
+        text-decoration: none;
+    }
+    
+    a:hover {
+        color: orange;
+    }
+    
+    * {
+        box-sizing: border-box;
+    }
+    
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    
+    .button {
+        background-color: #008fb3;
+        border: none;
+        color: white;
+        padding: 8px 16px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+    }
+    
+    .header {
+        left: 0;
+        overflow: visible;
+        background-color: #169122;
+        padding: 0px 0px;
+        padding-top: 0px 0px;
+        width: 100%;
+    }
+    
+    .header-right {
+        float: right;
+    }
+    
+    @media screen and (max-width: 500px) {
+        .header a {
+            float: none;
+            display: block;
+            text-align: left;
+        }
+    }
+</style>
+
+</head>
+
+
+<script>
+    $(document)
+        .ready(
+            function() {
+                let postUrl = "/users"
+                if ($('input[name="role"]:checked').val() == 'user') {
+                    $("#fnameRow").show();
+                    $("#lnameRow").show();
+                    $("#cnameRow").hide()
+                }
+
+                $('#urole').click(function() {
+                    if ($(this).is(':checked')) {
+                        $("#fnameRow").show();
+                        $("#lnameRow").show();
+                        $("#cnameRow").hide()
+
+                    }
+                });
+                $('#erole').click(function() {
+                    if ($(this).is(':checked')) {
+                        postUrl = "/employers"
+                        $("#fnameRow").hide();
+                        $("#lnameRow").hide();
+                        $("#cnameRow").show()
+                    }
+                });
+
+                $("input").prop('required', true);
+
+                $("#saveButton")
+                    .click(
+                        function() {
+                            var isValid = false;
+                            var firstName = $("#fname").val()
+                            var lastName = $("#lname").val()
+                            var uname = $("#uname").val()
+                            var email = $("#email").val()
+                            var password = $("#password").val()
+                            var address = $("#address").val()
+                            var contact = $("#phone").val()
+                            var companyName = $("#cname").val()
+                            var role = $(
+                                    'input[name="role"]:checked')
+                                .val()
+                            if (role == 'user') {
+                                postUrl = "/users"
+                                if (firstName == "" ||
+                                    lastName == "" ||
+                                    uname == "" ||
+                                    email == "" ||
+                                    password == "" ||
+                                    address == "" ||
+                                    contact == "") {
+                                    alert("Please enter values for all the fields.");
+                                    isValid = false;
+                                    return false;
+                                } else {
+                                    isValid = true;
+                                }
+                            } else {
+                                postUrl = "/employers"
+                                if (companyName == "" ||
+                                    uname == "" ||
+                                    email == "" ||
+                                    password == "" ||
+                                    address == "" ||
+                                    contact == "") {
+                                    alert("Please enter values for all the fields.");
+                                    isValid = false;
+                                    return false;
+                                } else {
+                                    isValid = true;
+                                }
+
+                            }
+                            if (validate_fields() && isValid) {
+
+                                var sendData = {
+                                    "firstName": firstName,
+                                    "lastName": lastName,
+                                    "companyName": companyName,
+                                    "userName": uname,
+                                    "email": email,
+                                    "password": password,
+                                    "address": address,
+                                    "contact": contact,
+                                    "role": role
+                                }
+
+                                $
+                                    .ajax({
+                                        type: 'POST',
+                                        url: postUrl,
+                                        data: JSON
+                                            .stringify(sendData),
+                                        contentType: "application/json",
+                                        success: function(
+                                            data) {
+                                            console
+                                                .log(data);
+                                            toastr["success"]("Registered Successfully");
+                                        },
+                                        error: function(
+                                            errMsg) {
+                                            alert(errMsg);
+                                        }
+                                    });
+                            }
+                        });
+
+            });
+</script>
+</head>
+
+<body>
+
+    <div class="header" style="height: 90px">
+        <h1 style="font-size: 24px; padding-top:2%;">My Online CV</h1>
+        <div style="color: white; float: right; font-size: 15px; position: fixed; right: 80px; top: 55px;">
+            <a href="/alljobs">View Jobs</a>&nbsp;&nbsp;
+            <a href="/">Home</a>&nbsp;&nbsp;
+            <a href="/login">Login</a>&nbsp; &nbsp;
+
+
+
+        </div>
+
+
+    </div>
+
+    <div align="center">
+        <br>
+        <form id="myform">
+            <h4 style="color: #1451b3">Registration Form</h4>
+            <table style="color: #260d94; font-size: 13px">
+                <tr>
+                    <td><b>Select a Role</b></td>
+                    <td>
+                        <div id="">
+                            <input type="radio" id="urole" name="role" value="user" checked>
+                            <label for="loginrole">User</label> <input type="radio" id="erole" name="role" value="employer"> <label for="employer">Employer</label>
+
+                        </div>
+                    </td>
+                </tr>
+                <tr id="fnameRow">
+                    <td><br />First Name</td>
+                    <td><br /> <input type="text" name="firstName" id="fname" /></td>
+                </tr>
+                <tr id="lnameRow">
+                    <td>Last Name</td>
+                    <td><input type="text" name="lastName" id="lname" /></td>
+                </tr>
+                <tr id="cnameRow">
+                    <td><br />Employer Name</td>
+                    <td><br /> <input type="text" name="cName" id="cname" /></td>
+                </tr>
+                <tr>
+                    <td>User Name</td>
+                    <td><input type="text" name="username" id="uname" /></td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td><input type="text" name="email" id="email" /></td>
+                </tr>
+                <tr>
+                    <td>Password</td>
+                    <td><input type="password" name="password" id="password" /></td>
+                </tr>
+                <tr>
+                    <td>Address</td>
+                    <td><input type="text" name="address" id="address" /></td>
+                </tr>
+                <tr>
+                    <td>Contact No</td>
+                    <td><input type="text" name="contact" id="phone" /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="text-align: center;"><input style="border-radius: 12px;" type="button" class="button" name="Save" value="SAVE" id="saveButton" />
+                        <br><br><br><br>
+                    </td>
+                </tr>
+                <tr />
+
+            </table>
+        </form>
+    </div>
+    <div th:replace="fragments/footer::footer" />
+
+</body>
+
+</html>

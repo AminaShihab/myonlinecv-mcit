@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en-us" class="layout-pf layout-pf-fixed" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>All Jobs</title>
+    <data th:replace="fragments/header::header" />
+    <style type="text/css">
+        a:hover {
+            color: red;
+            text-decoration: none;
+        }
+        
+        .footer {
+            padding-top: 10px;
+            text-align: center;
+            background: #ddd;
+            position: absolute;
+            bottom: 0px;
+            width: 100%
+        }
+        
+        a {
+            color: white;
+            font-size: 19px;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            color: orange;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        .button {
+            background-color: #008fb3;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        
+        .header {
+            left: 0;
+            overflow: visible;
+            background-color: #169122;
+            padding: 0px 0px;
+            padding-top: 0px 0px;
+            width: 100%;
+        }
+        
+        .header-right {
+            float: right;
+        }
+        
+        @media screen and (max-width: 500px) {
+            .header a {
+                float: none;
+                display: block;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div th:replace="fragments/footer::footer" />
+
+    <div class="header" style="height:85px;background-color: #169122;">
+        <h2 style="font-size: 24px; text-align: center; color: white;">My Online CV</h2>
+        <div style="color: white; float: right; font-size: 15px; position: fixed; right: 80px; top: 55px;">
+            <a href="/" style="color: white; font-size: 18px; text-decoration: none; position: relative; top:-18px">Home</a>
+            <a href="/register" style="color: white; font-size: 18px; text-decoration: none; position: relative; top:-18px">Register</a>
+            <a href="/login" style="color: white; font-size: 18px; text-decoration: none; position: relative; top:-18px">Login</a>
+
+        </div>
+
+
+    </div>
+
+    <div id="myModal" class="modal">
+        <div id="cvContent" class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h3 style="color:orange;text-align:center">Job Details</h3>
+
+            <table style="color: #260d94;">
+                <tr>
+                    <td>Position ID</td>
+                    <td><input type="text" name="contact" id="posid" size="86" readonly /></td>
+                </tr>
+                <tr>
+                    <td>Title</td>
+                    <td><input type="text" name="contact" id="jtitle" size="86" readonly /></td>
+                </tr>
+                <tr>
+                    <td>Description</td>
+                    <td><textarea id=jdesc name="jdesc" rows="4" cols="84" readonly> </textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Salary/ hr</td>
+                    <td><input type="text" name="jsal" id="jsal" size="86" readonly /></td>
+                </tr>
+                <tr>
+                    <td>Job Type</td>
+                    <td>
+                        <input type="text" name="jtype" id="jtype" size="86" readonly />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Required skills</td>
+                    <td><textarea id=jskills name="jdetails" rows="3" cols="84" readonly> </textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Company Name</td>
+                    <td><input type="text" name="jsal" id="jcompany" size="86" readonly /></td>
+                </tr>
+                <tr>
+                    <td>Company Description</td>
+                    <td><textarea id=jcompanydesc name="jcompanydesc" rows="3" cols="84" readonly> </textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>City</td>
+                    <td><input type="text" name="jcity" id="jcity" size="86" readonly /></td>
+
+                </tr>
+                <tr>
+                    <td>Posted Date</td>
+                    <td><input type="text" name="jposDate" id="jposDate" size="86" readonly /></td>
+
+                </tr>
+                <tr>
+                    <td>Valid Till</td>
+                    <td><input type="text" name="tilldate" id="jtilldate" size="86" readonly /></td>
+
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td style="text-align: center;" colspan="1"><input style="border-radius: 12px; color: white; background-color: blue; width: 65px; height: 20 px; font-size: 17px" type="button" class="button" name="Save" value="Close" id="closeJob" /></td>
+
+                </tr>
+
+            </table>
+
+            <hr />
+            <br>
+
+        </div>
+
+    </div>
+    <div class="content" style="padding-left: 3%;">
+        <h3 id="header" style="color:orange">Active Jobs posted by all employers</h3>
+        <table class="datatable" id="tblJob">
+            <thead>
+                <tr>
+                    <th style="white-space: nowrap;overflow: hidden">Job Id</th>
+                    <th style="white-space: nowrap;overflow: hidden">Title</th>
+                    <th style="white-space: nowrap;overflow: hidden">Description</th>
+                    <th style="white-space: nowrap;overflow: hidden">Salary</th>
+                    <th style="white-space: nowrap;overflow: hidden">Job Type</th>
+                    <th style="white-space: nowrap;overflow: hidden">Required Skills</th>
+                    <th style="white-space: nowrap;overflow: hidden">Company</th>
+                    <th style="white-space: nowrap;overflow: hidden">Company Description</th>
+                    <th style="white-space: nowrap;overflow: hidden">City</th>
+                    <th style="white-space: nowrap;overflow: hidden">Posted On</th>
+                    <th style="white-space: nowrap;overflow: hidden">Valid Till</th>
+                    <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Action</th>
+                </tr>
+            </thead>
+            <tbody th:fragment="search_list">
+                <tr th:each="job, iStat : ${alljobs.content}" th:style="${iStat.even}? 'even-row' : 'odd-row'">
+
+                    <td style="color: blue;" th:text="${job.jobId}" />
+                    <td th:text="${job.jobTitle}" />
+                    <td th:text="${job.jobDescription}" />
+                    <td th:text="${job.salary}" />
+                    <td th:text="${job.jobType}" />
+                    <td th:text="${job.requiredSkills}" />
+                    <td th:text="${job.companyName}" />
+                    <td th:text="${job.companyDesciption}" />
+                    <td th:text="${job.city}" />
+                    <td th:text="${job.postedDate}" />
+                    <td th:text="${job.validTill}" />
+                    <td th:text="${job.appliedUsersId}" style="display:none;" />
+                    <td>
+                        <table>
+                            <tr>
+                                <td width="0px">
+                                    <button th:value="${job.jobId}" style="border-radius: 12px;color:white; background-color:blue; width:75px; height:22px" onclick="viewJob(this)">View</button>
+                                </td>
+                                <td width="0px">
+                                    <button th:value="${job.jobId}" style="border-radius: 12px;color:white; background-color:green; width:75px; height:22px" onclick="ApplyRow(this)">Apply</button>
+                                </td>
+
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+
+            </tbody>
+        </table>
+        <div th:if="${alljobs.totalPages > 0}" class="pagination" th:each="pageNumber : ${pageNumbers}">
+            <a th:href="@{/alljobs(size=${alljobs.size}, page=${pageNumber})}" th:text=${pageNumber} th:class="${pageNumber==alljobs.number + 1} ? active"></a>
+        </div>
+        <div th:replace="fragments/footer::footer" />
+
+    </div>
+    <br><br><br>
+    <script>
+        $("#closeModal").click(function() {
+
+            $("#myModal").css("display", "none");
+        });
+        $("#closeJob").click(function() {
+
+            $("#myModal").css("display", "none");
+        });
+
+        $("#cancelPrint").click(function() {
+
+            $("#myModal").css("display", "none");
+        });
+
+        function printDiv() {
+
+            var divToPrint = document.getElementById('cvContent');
+
+            var newWin = window.open('', 'Print-Window');
+
+            newWin.document.open();
+
+            newWin.document.write('<html><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
+
+            newWin.document.close();
+
+
+        }
+
+        function ApplyRow(button) {
+            window.location.href = "/applyjob"
+        }
+        $(document).ready(function() {
+            if ($(".datatable").find("tbody").find("tr").length == 0) {
+                $("#header").text("No jobs available");
+                $("#tblJob").hide();
+            }
+        });
+
+        function viewJob(jobId) {
+
+            $("#myModal").css("display", "block");
+            $.get("/job/" + jobId.value,
+                function(data, status) {
+
+                    $("#posid").val(data.jobId)
+                    $("#jtitle").val(data.jobTitle)
+                    $("#jdesc").val(data.jobDescription)
+                    $("#jsal").val(data.salary)
+                    $("#jtype").val(data.jobType)
+                    $("#jskills").val(data.requiredSkills)
+                    $("#jcompany").val(data.companyName)
+                    $("#jcompanydesc").val(data.companyDesciption)
+                    $("#jcity").val(data.city)
+                    $("#jposDate").val(data.postedDate)
+                    $("#jtilldate").val(data.validTill.slice(0, 10))
+
+                });
+
+        }
+    </script>
+</body>
+
+</html>

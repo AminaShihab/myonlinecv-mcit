@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en-us" class="layout-pf layout-pf-fixed" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Apply Jobs</title>
+    <data th:replace="fragments/header::header" />
+</head>
+
+<body>
+    <div th:replace="fragments/top-navi-bar::top-navi-bar" />
+    <div th:replace="fragments/vertical-navi::vertical-navi" />
+    <div class="content">
+        <h3 id="header" style="color:orange">Your applied Jobs</h3>
+        <table class="datatable" id="tblJob">
+            <thead>
+
+                <tr>
+                    <th>Job Id</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Salary</th>
+                    <th>Job Type</th>
+                    <th>Required Skills</th>
+                    <th>Company</th>
+                    <th>Company Description</th>
+                    <th>City</th>
+                    <th>Posted On</th>
+                    <th>Valid Till</th>
+                    <th>Action</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="job, iStat : ${appliedjobs.content}" th:style="${iStat.even}? 'even-row' : 'odd-row'">
+                    <td th:text="${job.jobId}" />
+                    <td th:text="${job.jobTitle}" />
+                    <td th:text="${job.jobDescription}" />
+                    <td th:text="${job.salary}" />
+                    <td th:text="${job.jobType}" />
+                    <td th:text="${job.requiredSkills}" />
+                    <td th:text="${job.companyName}" />
+                    <td th:text="${job.companyDesciption}" />
+                    <td th:text="${job.city}" />
+                    <td th:text="${job.postedDate}" />
+                    <td th:text="${job.validTill}" />
+                    <td th:text="${job.appliedUsersId}" style="display:none;" />
+                    <td> <button th:value="${job.jobId}" style="border-radius: 12px;color:white; background-color:red; width:75px; height:22px" onclick="RemoveRow(this)">Remove</button> </td>
+                </tr>
+
+
+            </tbody>
+        </table>
+        <div th:if="${appliedjobs.totalPages > 0}" class="pagination" th:each="pageNumber : ${pageNumbers}">
+            <a th:href="@{/appliedjobs(size=${appliedjobs.size}, page=${pageNumber})}" th:text=${pageNumber} th:class="${pageNumber==appliedjobs.number + 1} ? active"></a>
+        </div>
+        <div th:replace="fragments/footer::footer" />
+
+    </div>
+    <br><br><br>
+    <script>
+        function RemoveRow(button) {
+            let jobId = button.value;
+            $(button).prop('disabled', true).css('color', 'gray');
+            $.ajax({
+                url: "/users/" + PORTAL_USER.id + "/job/" + jobId,
+                type: 'DELETE',
+                success: function(result) {
+                    toastr["success"]("Job request has been deleted successfully (id : " + jobId + ")");
+                    window.setTimeout(function() {
+                        location.reload()
+                    }, 1000);
+                }
+            });
+        }
+        $(document).ready(function() {
+            if ($(".datatable").find("tbody").find("tr").length == 0) {
+                $("#header").text("You did not apply for any jobs");
+                $("#tblJob").hide();
+            }
+        });
+    </script>
+</body>
+
+</html>

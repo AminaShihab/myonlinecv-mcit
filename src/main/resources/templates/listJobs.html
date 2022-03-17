@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en-us" class="layout-pf layout-pf-fixed" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Post Jobs</title>
+    <data th:replace="fragments/header::header" />
+</head>
+
+<body>
+    <div th:replace="fragments/top-navi-bar::top-navi-bar" />
+    <div th:replace="fragments/vertical-navi::vertical-navi" />
+
+
+    <div id="myModal" class="modal">
+        <div id="cvContent" class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h3 style="color:orange;text-align:center">Job Details</h3>
+
+            <table style="color: #260d94">
+                <tr>
+                    <td>Position ID</td>
+                    <td><input type="text" name="contact" id="posid" size="86" readonly /></td>
+                </tr>
+                <tr>
+                    <td>Title</td>
+                    <td><input type="text" name="contact" id="jtitle" size="86" readonly /></td>
+                </tr>
+                <tr>
+                    <td>Description</td>
+                    <td><textarea id=jdesc name="jdesc" rows="4" cols="84" readonly> </textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Salary/ hr</td>
+                    <td><input type="text" name="jsal" id="jsal" size="86" readonly /></td>
+                </tr>
+                <tr>
+                    <td>Job Type</td>
+                    <td>
+                        <input type="text" name="jtype" id="jtype" size="86" readonly />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Required skills</td>
+                    <td><textarea id=jskills name="jdetails" rows="3" cols="84" readonly> </textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Company Name</td>
+                    <td><input type="text" name="jsal" id="jcompany" size="86" readonly /></td>
+                </tr>
+                <tr>
+                    <td>Company Description</td>
+                    <td><textarea id=jcompanydesc name="jcompanydesc" rows="3" cols="84" readonly> </textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>City</td>
+                    <td><input type="text" name="jcity" id="jcity" size="86" readonly /></td>
+
+                </tr>
+                <tr>
+                    <td>Posted Date</td>
+                    <td><input type="text" name="jposDate" id="jposDate" size="86" readonly /></td>
+
+                </tr>
+                <tr>
+                    <td>Valid Till</td>
+                    <td><input type="text" name="tilldate" id="jtilldate" size="86" readonly /></td>
+
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td style="text-align: center;" colspan="1"><input style="border-radius: 12px; color: white; background-color: blue; width: 65px; height: 20 px; font-size: 17px" type="button" class="button" name="Save" value="Close" id="closeJob" /></td>
+
+                </tr>
+
+            </table>
+
+            <hr />
+            <br>
+
+        </div>
+
+    </div>
+
+
+    <div class="content">
+        <h3 id="jobHeader" style="color:orange">You did not post any jobs</h3>
+        <h3 id="postedHeader" style="color:orange">Jobs posted by you</h3>
+        <table class="datatable" id="tblJob">
+            <thead>
+
+                <tr>
+                    <th>Job Id</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Salary</th>
+                    <th>Job Type</th>
+                    <th>Required Skills</th>
+                    <th>Company</th>
+                    <th>Company Description</th>
+                    <th>City</th>
+                    <th>Posted On</th>
+                    <th>Valid Till</th>
+                    <th>Action</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="job, iStat : ${jobPage.content}" th:style="${iStat.even}? 'even-row' : 'odd-row'">
+                    <td> <input type="button" name="jobId" th:id="${job.jobId}" th:value="${job.jobId}" readonly style="color:white; width:60px;background-color:green; font-size:14px; border-radius: 8px" onclick="viewJob(this.value)" /> </td>
+                    <td> <input type="text" name="jobTitle" th:value="${job.jobTitle}" /> </td>
+                    <td> <input type="text" name="jobDescription" th:value="${job.jobDescription}" /> </td>
+                    <td> <input type="text" name="salary" th:id="${job.salary}" th:value="${job.salary}" /> </td>
+                    <td> <select name="type" id="jobtype">
+                            <option value="Permanent">Permanent</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Internship">Internship</option>
+                            <option value="Freelance">Freelance</option>
+                        </select> </td>
+                    <td> <input type="text" name="requiredSkills" th:id="${job.requiredSkills}" th:value="${job.requiredSkills}" /> </td>
+                    <td> <input type="text" name="companyName" th:id="${job.companyName}" th:value="${job.companyName}" /> </td>
+                    <td> <input type="text" name="companyDesciption" th:id="${job.companyDesciption}" th:value="${job.companyDesciption}" /> </td>
+                    <td> <input type="text" name="city" th:id="${job.city}" th:value="${job.city}" style="color:blue" />
+                    </td>
+                    <td> <input type="date" name="postedDate" th:id="${job.postedDate}" th:value="${job.postedDate}" readonly style="color:#798285" /> </td>
+                    <td> <input type="date" name="validTill" th:id="${job.validTill}" th:value="${job.validTill}" />
+                    </td>
+                    <td th:text="${job.appliedUsersId}" style="display:none;" />
+                    <td th:text="${job.jobType}" style="display:none;" />
+                    <td th:text="${job.validTill}" style="display:none;" />
+
+                    <td> <button th:value="${job.jobId}" style="border-radius: 12px;color:white; background-color:red; width:75px; height:22px" onclick="deleteRow(this.value)">Delete</button> </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: center;" colspan="1"><input style="border-radius: 12px; color: white; background-color: blue; width: 65px; height: 20 px; font-size: 17px" type="button" class="button" name="Save" value="SAVE" id="saveJobs" />
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <div th:if="${jobPage.totalPages > 0}" class="pagination" th:each="pageNumber : ${pageNumbers}">
+            <a th:href="@{/listjobs(size=${jobPage.size}, page=${pageNumber})}" th:text=${pageNumber} th:class="${pageNumber==jobPage.number + 1} ? active"></a>
+        </div>
+        <br><br><br>
+
+        <div th:replace="fragments/footer::footer" />
+
+    </div>
+    <script>
+        $("#closeModal").click(function() {
+
+            $("#myModal").css("display", "none");
+        });
+        $("#closeJob").click(function() {
+            $("#myModal").css("display", "none");
+        });
+
+        $("#cancelPrint").click(function() {
+
+            $("#myModal").css("display", "none");
+        });
+
+        function printDiv() {
+
+            var divToPrint = document.getElementById('cvContent');
+
+            var newWin = window.open('', 'Print-Window');
+
+            newWin.document.open();
+
+            newWin.document.write('<html><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
+
+            newWin.document.close();
+
+
+        }
+
+        $(document).ready(function() {
+
+
+            var opt = {
+                'Permanent': 0,
+                'Contract': 1,
+                'Internship': 2,
+                'Freelance': 3
+            }
+            var i = 1;
+            var t = document.getElementById('tblJob');
+            var count = $("#tblJob tr").length
+            for (let c = 1; c < count - 1; c++) {
+
+                var dd = $(t.rows[i].cells)[4].childNodes[1]
+                dd.selectedIndex = opt[$(t.rows[i].cells)[12].textContent]
+                $(t.rows[i].cells)[10].childNodes[1].value = new Date($(t.rows[i].cells)[13].textContent).toISOString().slice(0, 10).toString()
+                i++
+            }
+
+            if (document.getElementById("tblJob").rows.length > 2) {
+                $("#tblJob").show()
+                $("#postedHeader").show()
+                $("#jobHeader").hide()
+            } else {
+                $("#tblJob").hide()
+                $("#postedHeader").hide()
+                $("#jobHeader").show()
+            }
+
+            $("#saveJobs").click(function() {
+                // read jobs from UI
+                var i = 1;
+                var t = document.getElementById('tblJob');
+                var count = $("#tblJob tr").length
+                for (let c = 1; c < count; c++) {
+                    var postBody = {
+                        "jobId": parseInt($(t.rows[i].cells)[0].childNodes[1].value),
+                        "jobTitle": $(t.rows[i].cells)[1].childNodes[1].value,
+                        "jobDescription": $(t.rows[i].cells)[2].childNodes[1].value,
+                        "salary": $(t.rows[i].cells)[3].childNodes[1].value,
+                        "jobType": $(t.rows[i].cells)[4].childNodes[1].value,
+                        "requiredSkills": $(t.rows[i].cells)[5].childNodes[1].value,
+                        "companyName": $(t.rows[i].cells)[6].childNodes[1].value,
+                        "companyDesciption": $(t.rows[i].cells)[7].childNodes[1].value,
+                        "city": $(t.rows[i].cells)[8].childNodes[1].value,
+                        "validTill": new Date($(t.rows[i].cells)[10].childNodes[1].value).toISOString().slice(0, 10),
+                        "postedById": PORTAL_USER.id,
+                        "appliedUsersId": JSON.parse($(t.rows[i].cells)[11].textContent),
+                    }
+
+
+                    $.ajax({
+                        type: 'PUT',
+                        url: '/employers/job/' + $(t.rows[i].cells)[0].childNodes[1].value,
+                        data: JSON.stringify(postBody),
+                        contentType: "application/json",
+                        success: function(
+                            data) {
+                            console.log(data);
+                            toastr["success"]("Job Updated Successfully");
+
+                        },
+                        error: function(
+                            errMsg) {
+                            alert(errMsg);
+                        }
+                    });
+                    i++;
+                }
+
+            });
+
+
+        });
+
+        function deleteRow(jobId) {
+            $.ajax({
+                type: 'DELETE',
+                url: '/employers/job/' + jobId,
+                contentType: "application/json",
+                success: function(data) {
+                    toastr["success"]("Job has been deleted with id " + jobId);
+
+                },
+                error: function(errMsg) {
+                    toastr["error"]("Something went wrong with backend : " + JSON.stringify(errMsg));
+                }
+            });
+            window.setTimeout(function() {
+                location.reload()
+            }, 1200);
+
+        }
+
+        function viewJob(jobId) {
+
+            $("#myModal").css("display", "block");
+
+            $.get("/job/" + jobId,
+                function(data, status) {
+                    $("#posid").val(data.jobId)
+                    $("#jtitle").val(data.jobTitle)
+                    $("#jdesc").val(data.jobDescription)
+                    $("#jsal").val(data.salary)
+                    $("#jtype").val(data.jobType)
+                    $("#jskills").val(data.requiredSkills)
+                    $("#jcompany").val(data.companyName)
+                    $("#jcompanydesc").val(data.companyDesciption)
+                    $("#jcity").val(data.city)
+                    $("#jposDate").val(data.postedDate)
+                    $("#jtilldate").val(new Date(data.validTill).toISOString().slice(0, 10).toString())
+
+                });
+
+        }
+    </script>
+</body>
+
+</html>
