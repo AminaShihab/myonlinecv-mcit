@@ -1,7 +1,0 @@
-vi - open 
-esc : q!  - quit , no save
-esc : wq! - write 
-
-100 dd - delete 
-
-alias k=kubectl
